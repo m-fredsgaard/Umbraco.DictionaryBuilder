@@ -319,6 +319,12 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Umbraco.DictionayBuilder\Umbraco.DictionaryBuilder.csproj">
+      <Project>{df6ba6f4-20ab-47b0-bfaa-b37603f98cf9}</Project>
+      <Name>Umbraco.DictionaryBuilder</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
