@@ -20,9 +20,9 @@ namespace Umbraco.DictionaryBuilder
     public class DictionaryHttpHandler : IDictionaryHttpHandler
     {
         private readonly ILocalizationService _localizationService;
-        private readonly IConfiguration _configuration;
+        private readonly IDictionaryBuilderConfiguration _configuration;
 
-        public DictionaryHttpHandler(ILocalizationService localizationService, IConfiguration configuration)
+        public DictionaryHttpHandler(ILocalizationService localizationService, IDictionaryBuilderConfiguration configuration)
         {
             _localizationService = localizationService;
             _configuration = configuration;
@@ -32,6 +32,8 @@ namespace Umbraco.DictionaryBuilder
 
         public void ProcessRequest(HttpContext context)
         {
+            return;
+
             string locale = context.Request.QueryString["l"] ?? context.Request.QueryString["locale"];
 
             string[] prefixes = (context.Request.QueryString["p"] ?? context.Request.QueryString["prefix"])?.Split(',');

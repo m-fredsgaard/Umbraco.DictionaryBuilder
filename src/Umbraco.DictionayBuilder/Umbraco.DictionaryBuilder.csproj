@@ -144,7 +144,8 @@
   <ItemGroup>
     <Compile Include="Compose\DictionaryBuilderComponent.cs" />
     <Compile Include="Compose\DictionaryBuilderComposer.cs" />
-    <Compile Include="Configuration\IConfiguration.cs" />
+    <Compile Include="Configuration\DictionaryBuilderConfiguration.cs" />
+    <Compile Include="Configuration\IDictionaryBuilderConfiguration.cs" />
     <Compile Include="DictionaryContainer.cs" />
     <Compile Include="DictionaryHttpHandler.cs" />
     <Compile Include="DictionaryKeyAttribute.cs" />

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Web.Routing;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Events;
@@ -12,10 +13,10 @@ namespace Umbraco.DictionaryBuilder.Compose
     public class DictionaryComponent : IComponent
     {
         private readonly ILocalizationService _localizationService;
-        private readonly IConfiguration _configuration;
+        private readonly IDictionaryBuilderConfiguration _configuration;
         private readonly IDictionaryHttpHandler _dictionaryHttpHandler;
 
-        public DictionaryComponent(ILocalizationService localizationService, IConfiguration configuration, IDictionaryHttpHandler dictionaryHttpHandler)
+        public DictionaryComponent(ILocalizationService localizationService, IDictionaryBuilderConfiguration configuration, IDictionaryHttpHandler dictionaryHttpHandler)
         {
             _localizationService = localizationService;
             _configuration = configuration;
@@ -41,12 +42,12 @@ namespace Umbraco.DictionaryBuilder.Compose
 
         private void LocalizationServiceOnDeletedDictionaryItem(ILocalizationService sender, DeleteEventArgs<IDictionaryItem> e)
         {
-            throw new NotImplementedException();
+            
         }
 
         private void LocalizationServiceOnSavedDictionaryItem(ILocalizationService sender, SaveEventArgs<IDictionaryItem> e)
         {
-            throw new NotImplementedException();
+            
         }
 
         public void Terminate()
