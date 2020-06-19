@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.DictionaryBuilder", "Umbraco.DictionayBuilder\Umbraco.DictionaryBuilder.csproj", "{DF6BA6F4-20AB-47B0-BFAA-B37603F98CF9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{2F373356-0770-42D6-8D36-0ABBB7FA9231}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Umbraco", "Demo.Umbraco\Demo.Umbraco.csproj", "{F8C74500-B953-410D-BCB7-DB5F454EB4CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,9 +19,16 @@ Global
 		{DF6BA6F4-20AB-47B0-BFAA-B37603F98CF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF6BA6F4-20AB-47B0-BFAA-B37603F98CF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF6BA6F4-20AB-47B0-BFAA-B37603F98CF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8C74500-B953-410D-BCB7-DB5F454EB4CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8C74500-B953-410D-BCB7-DB5F454EB4CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8C74500-B953-410D-BCB7-DB5F454EB4CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8C74500-B953-410D-BCB7-DB5F454EB4CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F8C74500-B953-410D-BCB7-DB5F454EB4CF} = {2F373356-0770-42D6-8D36-0ABBB7FA9231}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6B0032A2-C8DF-4F38-839B-F3F695374673}
