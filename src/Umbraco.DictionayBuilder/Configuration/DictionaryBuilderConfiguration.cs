@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.IO;
 using Umbraco.Core;
 using Umbraco.Core.IO;
@@ -8,18 +9,17 @@ namespace Umbraco.DictionaryBuilder.Configuration
     public class DictionaryBuilderConfiguration : IDictionaryBuilderConfiguration
     {
         private const string Prefix = "Umbraco.DictionaryBuilder.";
-        public const string DefaultDictionaryNamespace = "Umbraco.Web.Dictionaries";
-        public const string DefaultDictionaryDirectory = "~/App_Data/Dictionaries";
+        private const string DefaultDictionaryNamespace = "Umbraco.Web";
+        private const string DefaultDictionaryItemsPartialClassName = "Dictionaries";
+        private const string DefaultDictionaryDirectory = "~/App_Data/Dictionaries";
 
+        public ModelsMode ModelsMode { get; }
         public string DictionaryNamespace { get; }
+        public string DictionaryItemsPartialClassName { get; }
         public string DictionaryDirectory { get; }
         public bool AcceptUnsafeModelsDirectory { get; }
-
+        public bool UseParentItemKeyPrefix { get; }
         public bool Enable { get; }
-
-        public string DictionaryHttpHandlerUrl { get; }
-
-        public int DictionaryClientCache { get; }
 
         public DictionaryBuilderConfiguration()
         {
@@ -28,7 +28,9 @@ namespace Umbraco.DictionaryBuilder.Configuration
             Enable = ConfigurationManager.AppSettings[Prefix + "Enable"] == "true";
 
             // ensure defaults are initialized for tests
+            ModelsMode = ModelsMode.LiveAppData;
             DictionaryNamespace = DefaultDictionaryNamespace;
+            DictionaryItemsPartialClassName = DefaultDictionaryItemsPartialClassName;
             DictionaryDirectory = IOHelper.MapPath(DefaultDictionaryDirectory);
 
             // stop here, everything is false
@@ -36,11 +38,26 @@ namespace Umbraco.DictionaryBuilder.Configuration
 
             // default: false
             AcceptUnsafeModelsDirectory = ConfigurationManager.AppSettings[Prefix + "AcceptUnsafeModelsDirectory"].InvariantEquals("true");
+            UseParentItemKeyPrefix = ConfigurationManager.AppSettings[Prefix + "UseParentItemKeyPrefix"].InvariantEquals("true");
 
             // default: initialized above with DefaultDictionaryNamespace const
-            var value = ConfigurationManager.AppSettings[Prefix + "ModelsNamespace"];
+            string value = ConfigurationManager.AppSettings[Prefix + "ModelsMode"];
+            if (!string.IsNullOrWhiteSpace(value))
+            {
+                if(!Enum.TryParse(value, true, out ModelsMode modelsMode))
+                    throw new ConfigurationErrorsException($"Invalid model mode \"{value}\".");
+                ModelsMode = modelsMode;
+            }
+
+            // default: initialized above with DefaultDictionaryNamespace const
+            value = ConfigurationManager.AppSettings[Prefix + "ModelsNamespace"];
             if (!string.IsNullOrWhiteSpace(value))
                 DictionaryNamespace = value;
+
+            // default: initialized above with DefaultDictionaryItemsPartialClassName const
+            value = ConfigurationManager.AppSettings[Prefix + "DictionaryItemsPartialClassName"];
+            if (!string.IsNullOrWhiteSpace(value))
+                DictionaryItemsPartialClassName = value;
 
             // default: initialized above with DefaultDictionaryDirectory const
             value = ConfigurationManager.AppSettings[Prefix + "ModelsDirectory"];
@@ -54,13 +71,13 @@ namespace Umbraco.DictionaryBuilder.Configuration
                 DictionaryDirectory = GetModelsDirectory(root, value, AcceptUnsafeModelsDirectory);
             }
 
-            value = ConfigurationManager.AppSettings[Prefix + "HttpHandlerUrl"];
-            if (!string.IsNullOrWhiteSpace(value))
-                DictionaryHttpHandlerUrl = value;
+            //value = ConfigurationManager.AppSettings[Prefix + "HttpHandlerUrl"];
+            //if (!string.IsNullOrWhiteSpace(value))
+            //    DictionaryHttpHandlerUrl = value;
 
-            value = ConfigurationManager.AppSettings[Prefix + "DictionaryClientCache"];
-            if (!int.TryParse(value, out int clientCache))
-                DictionaryClientCache = clientCache;
+            //value = ConfigurationManager.AppSettings[Prefix + "DictionaryClientCache"];
+            //if (!int.TryParse(value, out int clientCache))
+            //    DictionaryClientCache = clientCache;
         }
         
         // internal for tests
@@ -74,7 +91,7 @@ namespace Umbraco.DictionaryBuilder.Configuration
 
             if (config.StartsWith("~/"))
             {
-                var dir = Path.Combine(root, config.TrimStart("~/"));
+                string dir = Path.Combine(root, config.TrimStart("~/"));
 
                 // sanitize - GetFullPath will take care of any relative
                 // segments in path, eg '../../foo.tmp' - it may throw a SecurityException
