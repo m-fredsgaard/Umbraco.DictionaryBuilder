@@ -5,7 +5,10 @@ set ProjectPath=%~2
 set TargetDir=%~3
 set ConfigurationName=%~4
 
-if "%ConfigurationName%" NEQ "Debug" GOTO exit
+set Suffix="dev"
+if "%ConfigurationName%" NEQ "Debug" (
+	set Suffix=""
+)
 
 set NuGetPath=%NUGET_PATH%
 if "%NuGetPath%" == "" (
@@ -14,6 +17,6 @@ if "%NuGetPath%" == "" (
 
 if not exist "%NuGetPath%" mkdir %NuGetPath%
 
-%SolutionDir%..\deploy\nuget.exe pack %ProjectPath% -Suffix dev -Properties Configuration=%ConfigurationName% -OutputDirectory %NuGetPath%
+%SolutionDir%..\deploy\nuget.exe pack %ProjectPath% -Suffix %Suffix% -Properties Configuration=%ConfigurationName% -OutputDirectory %NuGetPath%
 
 :exit

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
-    <id>Umbraco.DictionaryBuilder</id>
+    <id>Our.Umbraco.DictionaryBuilder</id>
     <version>$version$</version>
     <authors>m-fredsgaard</authors>
     <owners>GenericShape</owners>
@@ -13,8 +13,8 @@
     <repository type="git" url="https://github.com/m-fredsgaard/Umbraco.DictionaryBuilder" />
     <dependencies>
       <group targetFramework="net472">
-        <dependency id="UmbracoCms.Core" version="[8.6.3, 9)" />
-        <dependency id="UmbracoCms.Web" version="[8.6.3, 9)" />
+        <dependency id="UmbracoCms.Core" version="[8.2.1, 9)" />
+        <dependency id="UmbracoCms.Web" version="[8.2.1, 9)" />
       </group>
     </dependencies>
     <references>
@@ -22,6 +22,7 @@
         <reference file="$id$.dll" />
       </group>
     </references>
+    <tags>umbraco</tags>
   </metadata>
   <files>
     <file src="bin\$configuration$\$id$.dll" target="ref/net472/" />
