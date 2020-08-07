@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Core.Models;
 using Umbraco.Core.Services;
@@ -19,10 +20,12 @@ namespace Umbraco.DictionaryBuilder.Services
         /// Get dictionary models
         /// </summary>
         /// <returns>An array of models</returns>
-        public DictionaryModel[] GetDictionaryModels()
+        public DictionaryModel[] GetDictionaryModels(Func<IDictionaryItem, bool> predicate = null)
         {
             // Get all dictionaries from Umbraco database
-            IDictionaryItem[] dictionaryItems = _localizationService.GetDictionaryItemDescendants(null).OrderBy(x => x.ItemKey).ToArray();
+            IDictionaryItem[] dictionaryItems = _localizationService.GetDictionaryItemDescendants(null)
+                .Where(predicate ?? (x => true))
+                .OrderBy(x => x.ItemKey).ToArray();
             
             // Generate models
             return GetDictionaryModels(dictionaryItems).OrderBy(x => x.ItemKey).ToArray();
@@ -43,7 +46,7 @@ namespace Umbraco.DictionaryBuilder.Services
             foreach (IDictionaryItem dictionaryItem in dictionaryItems.Where(x => x.ParentId == parentModel?.Key))
             {
                 // Create a model, return it and continue
-                DictionaryModelWrapper model = new DictionaryModelWrapper(dictionaryItem.Key, dictionaryItem.ItemKey, parentModel);
+                DictionaryModelWrapper model = new DictionaryModelWrapper(dictionaryItem, parentModel);
                 yield return model;
 
                 // Generate child models and return them

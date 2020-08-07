@@ -68,6 +68,9 @@
     <Reference Include="ImageProcessor.Web, Version=4.10.0.100, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ImageProcessor.Web.4.10.0.100\lib\net452\ImageProcessor.Web.dll</HintPath>
     </Reference>
+    <Reference Include="Jint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=2e92ba9c8d81157f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Jint.2.11.58\lib\net451\Jint.dll</HintPath>
+    </Reference>
     <Reference Include="LightInject, Version=5.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\LightInject.5.4.0\lib\net46\LightInject.dll</HintPath>
     </Reference>
@@ -129,8 +132,11 @@
     <Reference Include="MiniProfiler.Shared, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b44f9351044011a3, processorArchitecture=MSIL">
       <HintPath>..\packages\MiniProfiler.Shared.4.0.138\lib\net461\MiniProfiler.Shared.dll</HintPath>
     </Reference>
+    <Reference Include="MomentJs.Net, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MomentJs.Net.0.4.3\lib\netstandard2.0\MomentJs.Net.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NPoco, Version=3.9.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NPoco.3.9.4\lib\net45\NPoco.dll</HintPath>
@@ -243,19 +249,24 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="Umbraco.Core, Version=8.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.8.6.2\lib\net472\Umbraco.Core.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Umbraco-CMS\src\Umbraco.Core\bin\Debug\Umbraco.Core.dll</HintPath>
     </Reference>
     <Reference Include="Umbraco.Examine, Version=8.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Web.8.6.2\lib\net472\Umbraco.Examine.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Umbraco-CMS\src\Umbraco.Examine\bin\Debug\Umbraco.Examine.dll</HintPath>
     </Reference>
     <Reference Include="Umbraco.ModelsBuilder.Embedded, Version=8.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Web.8.6.2\lib\net472\Umbraco.ModelsBuilder.Embedded.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Umbraco-CMS\src\Umbraco.ModelsBuilder.Embedded\bin\Debug\Umbraco.ModelsBuilder.Embedded.dll</HintPath>
     </Reference>
     <Reference Include="Umbraco.Web, Version=8.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Web.8.6.2\lib\net472\Umbraco.Web.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Umbraco-CMS\src\Umbraco.Web\bin\Debug\Umbraco.Web.dll</HintPath>
     </Reference>
     <Reference Include="Umbraco.Web.UI, Version=8.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Web.8.6.2\lib\net472\Umbraco.Web.UI.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Umbraco-CMS\src\Umbraco.Web.UI\bin\Umbraco.Web.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -288,6 +299,24 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Data\Dictionaries\Dictionaries.cs" />
+    <Compile Include="App_Data\Dictionaries\Dictionaries.generated.cs" />
+    <Compile Include="App_Data\Models\Blog.generated.cs" />
+    <Compile Include="App_Data\Models\Blogpost.generated.cs" />
+    <Compile Include="App_Data\Models\Contact.generated.cs" />
+    <Compile Include="App_Data\Models\ContentBase.generated.cs" />
+    <Compile Include="App_Data\Models\ContentPage.generated.cs" />
+    <Compile Include="App_Data\Models\Feature.generated.cs" />
+    <Compile Include="App_Data\Models\File.generated.cs" />
+    <Compile Include="App_Data\Models\Folder.generated.cs" />
+    <Compile Include="App_Data\Models\Home.generated.cs" />
+    <Compile Include="App_Data\Models\Image.generated.cs" />
+    <Compile Include="App_Data\Models\Member.generated.cs" />
+    <Compile Include="App_Data\Models\NavigationBase.generated.cs" />
+    <Compile Include="App_Data\Models\People.generated.cs" />
+    <Compile Include="App_Data\Models\Person.generated.cs" />
+    <Compile Include="App_Data\Models\Product.generated.cs" />
+    <Compile Include="App_Data\Models\Products.generated.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -312,6 +341,22 @@
     <Content Include="Views\Partials\Grid\Editors\Base.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap3.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap3-Fluid.cshtml" />
+    <Content Include="Views\master.cshtml" />
+    <Content Include="Views\Blog.cshtml" />
+    <Content Include="Views\Blogpost.cshtml" />
+    <Content Include="Views\contact.cshtml" />
+    <Content Include="Views\contentPage.cshtml" />
+    <Content Include="Views\home.cshtml" />
+    <Content Include="Views\people.cshtml" />
+    <Content Include="Views\Person.cshtml" />
+    <Content Include="Views\Product.cshtml" />
+    <Content Include="Views\Products.cshtml" />
+    <Content Include="Views\MacroPartials\FeaturedProducts.cshtml" />
+    <Content Include="Views\MacroPartials\LatestBlogposts.cshtml" />
+    <Content Include="Views\Partials\CategoryLinks.cshtml" />
+    <Content Include="Views\Partials\Navigation\SubNavigation.cshtml" />
+    <Content Include="Views\Partials\Navigation\TopNavigation.cshtml" />
+    <Content Include="Views\Partials\SectionHeader.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -320,6 +365,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Views\Home\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Umbraco.DictionaryBuilder.VueI18N\Umbraco.DictionaryBuilder.VueI18N.csproj">
+      <Project>{d47f0c38-0154-4ff3-920a-6ef087e45da7}</Project>
+      <Name>Umbraco.DictionaryBuilder.VueI18N</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Umbraco.DictionayBuilder\Umbraco.DictionaryBuilder.csproj">
       <Project>{df6ba6f4-20ab-47b0-bfaa-b37603f98cf9}</Project>
       <Name>Umbraco.DictionaryBuilder</Name>

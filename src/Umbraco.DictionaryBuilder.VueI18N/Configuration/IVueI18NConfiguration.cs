@@ -1,6 +1,8 @@
-﻿namespace Umbraco.DictionaryBuilder.VueI18N.Configuration
+﻿using Umbraco.DictionaryBuilder.Configuration;
+
+namespace Umbraco.DictionaryBuilder.VueI18N.Configuration
 {
-    public interface IVueI18NConfiguration
+    public interface IVueI18NConfiguration : IDictionaryBuilderConfiguration
     {
         string DictionaryHttpHandlerUrl { get; }
         int DictionaryClientCache { get; }

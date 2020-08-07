@@ -1,25 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Web;
 using System.Web.Routing;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Umbraco.Core.Models;
-using Umbraco.Core.Services;
+using Serilog;
+using Umbraco.DictionaryBuilder.Extensions;
+using Umbraco.DictionaryBuilder.Models;
+using Umbraco.DictionaryBuilder.Services;
 using Umbraco.DictionaryBuilder.VueI18N.Configuration;
 
 namespace Umbraco.DictionaryBuilder.VueI18N
 {
-    public interface IDictionaryHttpHandler : IHttpHandler, IRouteHandler
-    {}
     public class DictionaryHttpHandler : IDictionaryHttpHandler
     {
-        private readonly ILocalizationService _localizationService;
+        private readonly IUmbracoService _localizationService;
         private readonly IVueI18NConfiguration _configuration;
 
-        public DictionaryHttpHandler(ILocalizationService localizationService, IVueI18NConfiguration configuration)
+        public DictionaryHttpHandler(IUmbracoService localizationService, IVueI18NConfiguration configuration)
         {
             _localizationService = localizationService;
             _configuration = configuration;
@@ -30,10 +32,10 @@ namespace Umbraco.DictionaryBuilder.VueI18N
         public void ProcessRequest(HttpContext context)
         {
             string locale = context.Request.QueryString["l"] ?? context.Request.QueryString["locale"];
+            SetCurrentCulture(locale);
 
             string[] prefixes = (context.Request.QueryString["p"] ?? context.Request.QueryString["prefix"])?.Split(',');
-            DateTime lastModified = default;
-            dynamic dictionaryItems = GetAllItems(ref lastModified, locale, prefixes);
+            dynamic dictionaryItems = GetAllItems(out DateTime lastModified, prefixes);
             if (dictionaryItems == null)
             {
                 context.Response.StatusCode = (int) HttpStatusCode.NotFound;
@@ -62,7 +64,24 @@ namespace Umbraco.DictionaryBuilder.VueI18N
             context.Response.ContentType = "application/json";
             context.Response.Write(json); 
         }
-        
+
+        private static void SetCurrentCulture(string locale)
+        {
+            if(locale == null)
+                return;
+
+            try
+            {
+                CultureInfo culture = CultureInfo.GetCultureInfo(locale);
+                Thread.CurrentThread.CurrentCulture = culture;
+                Thread.CurrentThread.CurrentUICulture = culture;
+            }
+            catch (CultureNotFoundException e)
+            {
+                Log.Warning(e, $"Culture {locale} not found. Using current culture: {CultureInfo.CurrentUICulture.Name}");
+            }
+        }
+
         public IHttpHandler GetHttpHandler(RequestContext requestContext)
         {
             return this;
@@ -72,65 +91,42 @@ namespace Umbraco.DictionaryBuilder.VueI18N
         /// Get all dictionary items for Vue app formatted as a tree in the shape that vue-I18n likes.
         /// </summary>
         /// <returns></returns>
-        private dynamic GetAllItems(ref DateTime lastModified, string locale, params string[] prefixes)
+        private dynamic GetAllItems(out DateTime lastModified, params string[] prefixes)
         {
-            IEnumerable<ILanguage> languages = _localizationService.GetAllLanguages();
-
-            List<IDictionaryItem> dictionaryItems = _localizationService.GetDictionaryItemDescendants(null)
+            DictionaryModelWrapper[] dictionaryModels = _localizationService.GetDictionaryModels(item => prefixes == null || !prefixes.Any() || prefixes.Any(prefix => item.ItemKey.Equals(prefix, StringComparison.InvariantCultureIgnoreCase) || item.ItemKey.StartsWith(prefix + ".", StringComparison.InvariantCultureIgnoreCase)))
                 .OrderBy(item => item.ItemKey)
-                .Where(item => prefixes == null || !prefixes.Any() || prefixes.Any(prefix => item.ItemKey.Equals(prefix, StringComparison.InvariantCultureIgnoreCase) || item.ItemKey.StartsWith(prefix + ".", StringComparison.InvariantCultureIgnoreCase)))
-                .ToList();
+                .Cast<DictionaryModelWrapper>()
+                .ToArray();
 
-            if (locale != null)
-            {
-                ILanguage language = languages.SingleOrDefault(x => x.CultureInfo.Name.Equals(locale, StringComparison.InvariantCultureIgnoreCase));
-                return language == null 
-                    ? null 
-                    : GenerateVueI18N(dictionaryItems, null, 0, language, ref lastModified);
-            }
-            var items = new Dictionary<string,dynamic>();
-            foreach (ILanguage language in languages)
-            {
-                string key = language.CultureInfo.Name;
-                dynamic value = GenerateVueI18N(dictionaryItems, null, 0, language, ref lastModified);
-                items.Add(key, value);
-            }
-            return items;
+            lastModified = dictionaryModels.Select(x => x.LastModified).Max();
+
+            return GenerateVueI18N(dictionaryModels, null);
         }
 
-        private static dynamic GenerateVueI18N(IEnumerable<IDictionaryItem> items, string parentKey, int level, ILanguage language, ref DateTime lastModified)
+        private dynamic GenerateVueI18N(DictionaryModelWrapper[] allDictionaryItems, DictionaryModelWrapper parent)
         {
-            // Group items by the level we're at
-            ILookup<string, IDictionaryItem> itemsByLevel = items.ToLookup(x => x.ItemKey.Split('.')[level]);
+            return GenerateVueI18N(allDictionaryItems, parent, out bool _);
+        }
 
-            // Format items as tree
-            var itemTree = new Dictionary<dynamic, dynamic>();
-            foreach (var t1 in itemsByLevel
-                .Select(item => new {item, itemsToRecurse = item.Where(x => x.ItemKey.Count(c => c == '.') > level)}))
+        private dynamic GenerateVueI18N(DictionaryModelWrapper[] allDictionaryItems, DictionaryModelWrapper parent, out bool hasChildItems)
+        {
+            var items = new Dictionary<dynamic,dynamic>();
+
+            DictionaryModelWrapper[] childDictionaryItems = allDictionaryItems.Where(x => x.ParentModel == parent).ToArray();
+            hasChildItems = childDictionaryItems.Any();
+            foreach (DictionaryModelWrapper dictionaryItem in childDictionaryItems)
             {
-                dynamic value;
-                string key = string.IsNullOrEmpty(parentKey)
-                    ? t1.item.Key
-                    : parentKey + "." + t1.item.Key;
-                if (t1.itemsToRecurse.Any())
-                {
-                    // Recurse to next level
-                    value = GenerateVueI18N(t1.itemsToRecurse, key, level + 1, language, ref lastModified);
-                }
-                else
-                {
-                    // At leaf; emit translation
-                    IDictionaryTranslation translation = t1.item.First().Translations.FirstOrDefault(t => t.LanguageId == language.Id);
-                    if (translation != null)
-                    {
-                        lastModified = new [] {lastModified, translation.CreateDate, translation.UpdateDate}.Max();
-                    }
-                    value = translation?.Value;
-                }
+                string itemKey = dictionaryItem.GenerateCodeItemKey(_configuration.UseParentItemKeyPrefix);
+                
+                itemKey = itemKey.ToCodeString(true).ToCamelCase();
+                items.Add($"${itemKey}", dictionaryItem.ToString());
 
-                itemTree.Add(t1.item.Key, value);
+                dynamic childItems = GenerateVueI18N(allDictionaryItems, dictionaryItem, out bool addChildItems);
+                if (addChildItems)
+                    items.Add($"{itemKey}", childItems);
             }
-            return itemTree;
+
+            return items;
         }
     }
 }

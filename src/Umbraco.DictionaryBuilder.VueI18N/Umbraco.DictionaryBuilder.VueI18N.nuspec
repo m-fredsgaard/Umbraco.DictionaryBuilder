@@ -1,19 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
-    <id>Our.Umbraco.DictionaryBuilder</id>
+    <id>Our.Umbraco.DictionaryBuilder.VueI18N</id>
     <version>$version$</version>
     <authors>m-fredsgaard</authors>
     <owners>GenericShape</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <projectUrl>https://github.com/m-fredsgaard/Umbraco.DictionaryBuilder</projectUrl>
-    <description>An Umbraco-CMS strongly typed dictionary item builder</description>
+    <description>A handler to export Umbraco-CMS dictionary item in VueI18N format</description>
     <license type="expression">MIT</license>
     <releaseNotes></releaseNotes>
     <repository type="git" url="https://github.com/m-fredsgaard/Umbraco.DictionaryBuilder" />
     <dependencies>
       <group targetFramework="net472">
         <dependency id="UmbracoCms.Core" version="[8.2.1, 9)" />
+        <dependency id="Our.Umbraco.DictionaryBuilder" version="1.0.1" />
       </group>
     </dependencies>
     <references>

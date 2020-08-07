@@ -1,8 +1,9 @@
 ﻿using Umbraco.Core;
 using Umbraco.Core.Composing;
+using Umbraco.Core.Dictionary;
 using Umbraco.Core.Services;
-using Umbraco.DictionaryBuilder.Compose;
-using Umbraco.DictionaryBuilder.Configuration;
+using Umbraco.DictionaryBuilder.Services;
+using Umbraco.DictionaryBuilder.VueI18N.Configuration;
 
 namespace Umbraco.DictionaryBuilder.VueI18N.Compose
 {
@@ -10,11 +11,13 @@ namespace Umbraco.DictionaryBuilder.VueI18N.Compose
     {
         public void Compose(Composition composition)
         {
-            composition.Configs.Add<IDictionaryBuilderConfiguration>(() => new DictionaryBuilderConfiguration());
+            composition.Configs.Add<IVueI18NConfiguration>(() => new VueI18NConfiguration());
             composition.RegisterAuto<ILocalizationService>();
+            composition.RegisterAuto<ICultureDictionary>();
+            composition.Register<IUmbracoService, UmbracoService>();
             composition.Register<IDictionaryHttpHandler, DictionaryHttpHandler>();
 
-            composition.Components().Append<DictionaryComponent>();
+            composition.Components().Append<VueI18NComponent>();
         }
     }
 }

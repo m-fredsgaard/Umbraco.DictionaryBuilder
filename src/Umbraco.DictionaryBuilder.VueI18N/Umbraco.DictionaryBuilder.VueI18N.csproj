@@ -23,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>NU5128</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,6 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>NU5128</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="LightInject, Version=5.4.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -147,6 +149,7 @@
     <Compile Include="Configuration\VueI18NConfiguration.cs" />
     <Compile Include="Configuration\IVueI18NConfiguration.cs" />
     <Compile Include="DictionaryHttpHandler.cs" />
+    <Compile Include="IDictionaryHttpHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -158,6 +161,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="Umbraco.DictionaryBuilder.VueI18N.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Umbraco.SqlServerCE.4.0.0.1\build\Umbraco.SqlServerCE.targets" Condition="Exists('..\packages\Umbraco.SqlServerCE.4.0.0.1\build\Umbraco.SqlServerCE.targets')" />
@@ -167,4 +171,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Umbraco.SqlServerCE.4.0.0.1\build\Umbraco.SqlServerCE.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Umbraco.SqlServerCE.4.0.0.1\build\Umbraco.SqlServerCE.targets'))" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>$(SolutionDir)..\build\GenereateDevelopNuGetPackage.cmd "$(SolutionDir)" "$(ProjectPath)" "$(TargetDir)" "$(ConfigurationName)"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

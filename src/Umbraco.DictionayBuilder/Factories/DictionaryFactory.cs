@@ -68,7 +68,7 @@ namespace Umbraco.DictionaryBuilder.Factories
             IDictionaryItem dictionaryItem = _localizationService.GetDictionaryItemByKey(itemKey) ?? _localizationService.CreateDictionaryItemWithIdentity(itemKey, parentModel?.Key);
             
             // Create the model
-            DictionaryModelWrapper model = new DictionaryModelWrapper(dictionaryItem.Key, dictionaryItem.ItemKey, parentModel);
+            DictionaryModelWrapper model = new DictionaryModelWrapper(dictionaryItem, parentModel);
             // If no value resolver are provided, then return the model
             if (valueResolver == null)
                 return model;

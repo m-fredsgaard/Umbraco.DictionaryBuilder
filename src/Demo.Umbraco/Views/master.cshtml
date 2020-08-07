@@ -1,4 +1,6 @@
 ﻿@using Umbraco.Core.PropertyEditors
+@using Umbraco.DictionaryBuilder.Extensions
+@using Umbraco.Web
 @inherits UmbracoViewPage
 @{
     Layout = null;
@@ -30,17 +32,24 @@
     </div>
 
     <header class="header">
-
+        @Dictionaries.Test3.Format("");
+        @Dictionaries.Morten2.Hund
+        @Dictionaries.Morten.Fredsgaard
+        @Dictionaries.Morten.Fredsgaard.Pedersen
+        @Dictionaries.Test
+        @Dictionaries.Test.Value
+        @Dictionaries.Test.Child
+        @Dictionaries.Test.Child.Value
         <div class="logo">
             @if (home.SiteLogo != null && !string.IsNullOrEmpty(home.SiteLogo.Url))
             {
-                <div class="nav-link--home">
-                    <img class="logo-image" src="@home.SiteLogo.Url" alt="@home.Sitename">
-                </div>
+            <div class="nav-link--home">
+                <img class="logo-image" src="@home.SiteLogo.Url" alt="@home.Sitename">
+            </div>
             }
             else
             {
-                <a class="nav-link nav-link--home nav-link--home__text logo-text" href="/">@home.Sitename</a>
+            <a class="nav-link nav-link--home nav-link--home__text logo-text" href="/">@home.Sitename</a>
             }
         </div>
 
@@ -74,6 +83,7 @@
     <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.1/jquery.validate.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/mvc/5.2.3/jquery.validate.unobtrusive.min.js"></script>
     <script src="@Url.Content("~/scripts/umbraco-starterkit-app.js")"></script>
+    <script src="@Url.Content("~/umbraco/dictionaries.json")"></script>
 
 </body>
 

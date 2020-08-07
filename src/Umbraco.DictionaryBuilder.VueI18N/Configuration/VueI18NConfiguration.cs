@@ -1,10 +1,13 @@
 ﻿using System.Configuration;
+using Umbraco.DictionaryBuilder.Configuration;
 
 namespace Umbraco.DictionaryBuilder.VueI18N.Configuration
 {
-    public class VueI18NConfiguration : IVueI18NConfiguration
+    public class VueI18NConfiguration : DictionaryBuilderConfiguration, IVueI18NConfiguration
     {
         private const string Prefix = "Umbraco.DictionaryBuilder.";
+        private const string DefaultDictionaryHttpHandlerUrl = "umbraco/dictionaries.json";
+        private const int DefaultDictionaryClientCache = 60;
         
         public string DictionaryHttpHandlerUrl { get; }
 
@@ -12,7 +15,11 @@ namespace Umbraco.DictionaryBuilder.VueI18N.Configuration
 
         public VueI18NConfiguration()
         {
-            var value = ConfigurationManager.AppSettings[Prefix + "HttpHandlerUrl"];
+            // ensure defaults are initialized for tests
+            DictionaryHttpHandlerUrl = DefaultDictionaryHttpHandlerUrl;
+            DictionaryClientCache = DefaultDictionaryClientCache;
+
+            string value = ConfigurationManager.AppSettings[Prefix + "HttpHandlerUrl"];
             if (!string.IsNullOrWhiteSpace(value))
                 DictionaryHttpHandlerUrl = value;
 
