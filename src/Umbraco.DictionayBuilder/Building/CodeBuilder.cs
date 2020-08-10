@@ -43,6 +43,8 @@ namespace Umbraco.DictionaryBuilder.Building
         public void Generate(params DictionaryModel[] models)
         {
             WriteHeader();
+            WriteLine($"using {typeof(DictionaryModel).Namespace};");
+            _builder.AppendLine();
             WriteLine($"namespace {_config.DictionaryNamespace}");
             WriteInBrackets(WriteDictionaryItemContainerClass, models);
         }
@@ -234,7 +236,7 @@ namespace Umbraco.DictionaryBuilder.Building
             _builder.AppendLine();
 
             // Write the nested DictionaryItem class
-            WriteLine($"public partial class _{className} : {typeof(DictionaryModel).FullName}");
+            WriteLine($"public partial class _{className} : {nameof(DictionaryModel)}");
             WriteInBrackets(WriteConstructor, model);
         }
 
