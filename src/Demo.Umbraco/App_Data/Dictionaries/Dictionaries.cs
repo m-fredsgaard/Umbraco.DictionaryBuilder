@@ -9,8 +9,8 @@ namespace Umbraco.Web
         public override void EnsureDictionaries()
         {
             DictionaryModel settings = Create("Settings");
-            DictionaryModel dateTime = Create("DateTime", settings);
-            DictionaryModel months = Create("Months", dateTime, culture => string.Join("_", GlobalizationProvider.Instance.Months(culture)));
+            DictionaryModel dateTime = Create("Settings.DateTime", settings);
+            DictionaryModel months = Create("Settings.DateTime.Months", dateTime, culture => string.Join("_", GlobalizationProvider.Instance.Months(culture)));
         }
     }
 }

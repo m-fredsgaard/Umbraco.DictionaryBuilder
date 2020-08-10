@@ -18,7 +18,7 @@ namespace Umbraco.DictionaryBuilder.Configuration
         public string DictionaryItemsPartialClassName { get; }
         public string DictionaryDirectory { get; }
         public bool AcceptUnsafeModelsDirectory { get; }
-        public bool UseParentItemKeyPrefix { get; }
+        public bool UseNestedStructure { get; }
         public bool GenerateFilePerDictionaryItem { get; }
         public bool Enable { get; }
 
@@ -39,7 +39,7 @@ namespace Umbraco.DictionaryBuilder.Configuration
 
             // default: false
             AcceptUnsafeModelsDirectory = ConfigurationManager.AppSettings[Prefix + "AcceptUnsafeModelsDirectory"].InvariantEquals("true");
-            UseParentItemKeyPrefix = ConfigurationManager.AppSettings[Prefix + "UseParentItemKeyPrefix"].InvariantEquals("true");
+            UseNestedStructure = ConfigurationManager.AppSettings[Prefix + "UseNestedStructure"].InvariantEquals("true");
             GenerateFilePerDictionaryItem = ConfigurationManager.AppSettings[Prefix + "GenerateFilePerDictionaryItem"].InvariantEquals("true");
 
             // default: initialized above with DefaultDictionaryNamespace const

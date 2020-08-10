@@ -53,10 +53,13 @@ namespace Umbraco.DictionaryBuilder.Compose
 
         private void LocalizationServiceOnSavingDictionaryItem(ILocalizationService sender, SaveEventArgs<IDictionaryItem> e)
         {
-            if(!_configuration.Enable || !_configuration.UseParentItemKeyPrefix || !e.CanCancel)
+            // If not enabled or if we do use nested structure or if e can't cancel, then return. Nothing to validate or cancel.
+            if(!_configuration.Enable || !_configuration.UseNestedStructure || !e.CanCancel)
                 return;
 
+            // See if there are any newly created items
             bool containsNewItems = e.SavedEntities.Any(x => !x.HasIdentity);
+            // An indicator of whether any item key has changed
             bool anyItemKeyChanged = false;
             
             foreach (IDictionaryItem dictionaryItem in e.SavedEntities)
@@ -64,19 +67,22 @@ namespace Umbraco.DictionaryBuilder.Compose
                 IDictionaryItem parentDictionaryItem = dictionaryItem.ParentId.HasValue
                     ? sender.GetDictionaryItemById(dictionaryItem.ParentId.Value)
                     : null;
+                // Create the parent model
                 DictionaryModel parentModel = parentDictionaryItem != null ? new DictionaryModelWrapper(parentDictionaryItem) : null;
+                // Create the model
                 DictionaryModel model = new DictionaryModelWrapper(dictionaryItem, parentModel);
 
-                if (dictionaryItem.Id > 0 && !anyItemKeyChanged)
+                if (dictionaryItem.HasIdentity && !anyItemKeyChanged)
                 {
+                    // Load the current dictionary item, to see if the ItemKey has changed.
                     IDictionaryItem currentDictionaryItem = sender.GetDictionaryItemById(dictionaryItem.Id);
                     anyItemKeyChanged = currentDictionaryItem.ItemKey != dictionaryItem.ItemKey;
                 }
 
-                if (model.IsValidGenerateCodeItemKey()) 
+                if (model.IsValidForNestedStructure()) 
                     continue;
 
-                e.CancelOperation(new EventMessage("DictionaryItem", "Message", EventMessageType.Error));
+                e.CancelOperation(new EventMessage("DictionaryItem", "Invalid key. The key must start with the full key of the parent + .ItemKey", EventMessageType.Error));
             }
             
             // If the operation isn't cancelled and there are new items, or any existing dictionary has a new item key

@@ -37,19 +37,19 @@
         @Dictionaries.Morten.Fredsgaard
         @Dictionaries.Morten.Fredsgaard.Pedersen
         @Dictionaries.Test
-        @Dictionaries.Test.Value
-        @Dictionaries.Test.Child
-        @Dictionaries.Test.Child.Value
+        @Dictionaries.Test
+        @Dictionaries.Child
+        @Dictionaries.ChildValue
         <div class="logo">
             @if (home.SiteLogo != null && !string.IsNullOrEmpty(home.SiteLogo.Url))
             {
-            <div class="nav-link--home">
-                <img class="logo-image" src="@home.SiteLogo.Url" alt="@home.Sitename">
-            </div>
+                <div class="nav-link--home">
+                    <img class="logo-image" src="@home.SiteLogo.Url" alt="@home.Sitename">
+                </div>
             }
             else
             {
-            <a class="nav-link nav-link--home nav-link--home__text logo-text" href="/">@home.Sitename</a>
+                <a class="nav-link nav-link--home nav-link--home__text logo-text" href="/">@home.Sitename</a>
             }
         </div>
 

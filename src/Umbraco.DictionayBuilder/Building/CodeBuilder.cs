@@ -134,37 +134,40 @@ namespace Umbraco.DictionaryBuilder.Building
             {
                 DictionaryModel model = models[i];
                 // Write a start region directive
-                WriteLine($"#region {model.ItemKey}");
+                WriteLine($"#region {model.GetItemKey()}");
 
                 // Create a list of action starting the the action to build the model itself
                 List<Action<DictionaryModel>> parentModelActions =
                     new List<Action<DictionaryModel>> {m => WriteContentModel(model)};
 
-                // Get the parent model
-                DictionaryModel parentModel = model.ParentModel;
-                // Loop through all parent models
-                while (parentModel != null)
+                if (model.RenderParentModel(_config.UseNestedStructure))
                 {
-                    // Prevent access to modified closure, so creating a local variable
-                    // https://www.jetbrains.com/help/resharper/2020.1/AccessToModifiedClosure.html
-                    DictionaryModel localParentModel = parentModel;
+                    // Get the parent model
+                    DictionaryModel parentModel = model.GetParentModel();
+                    // Loop through all parent models
+                    while (parentModel != null)
+                    {
+                        // Prevent access to modified closure, so creating a local variable
+                        // https://www.jetbrains.com/help/resharper/2020.1/AccessToModifiedClosure.html
+                        DictionaryModel localParentModel = parentModel;
 
-                    // The last added action is the child action to this action
-                    Action<DictionaryModel> childAction = parentModelActions.Last();
-                    // Generate the class name
-                    string itemKey = localParentModel.GenerateCodeItemKey(_config.UseParentItemKeyPrefix);
-                    string className = itemKey.ToCodeString(true).ToPascalCase();
-                    // Add the action to the list
-                    parentModelActions.Add(m => WritePartialClass($"_{className}", childAction, localParentModel));
+                        // The last added action is the child action to this action
+                        Action<DictionaryModel> childAction = parentModelActions.Last();
+                        // Generate the class name
+                        string itemKey = localParentModel.GenerateCodeItemKey(_config.UseNestedStructure);
+                        string className = itemKey.ToCodeString(true).ToPascalCase();
+                        // Add the action to the list
+                        parentModelActions.Add(m => WritePartialClass($"_{className}", childAction, localParentModel));
 
-                    // Get the next parent model
-                    parentModel = parentModel.ParentModel;
+                        // Get the next parent model
+                        parentModel = parentModel.GetParentModel();
+                    }
                 }
 
                 // Get the root action.
-                Action<DictionaryModel> greatestGrandParent = parentModelActions.Last();
+                Action<DictionaryModel> rootAction = parentModelActions.Last();
                 // Execute the root action, to start building the nested class structure
-                greatestGrandParent(model);
+                rootAction(model);
 
                 // Write a end region directive
                 WriteLine("#endregion");
@@ -210,7 +213,7 @@ namespace Umbraco.DictionaryBuilder.Building
             if(model == null)
                 return;
 
-            string itemKey = model.GenerateCodeItemKey(_config.UseParentItemKeyPrefix);
+            string itemKey = model.GenerateCodeItemKey(_config.UseNestedStructure);
 
             // Generate class name
             string className = itemKey.ToCodeString(true).ToPascalCase();
@@ -226,11 +229,11 @@ namespace Umbraco.DictionaryBuilder.Building
             _builder.AppendLine();
 
             // Write the property
-            WriteSummary($"The dictionary item: [{model.ItemKey}]");
+            WriteSummary($"The dictionary item: [{model.GetItemKey()}]");
             // Write generated code attribute to prevent warnings
             WriteGeneratedCodeAttribute();
             // If the model is the root model, then add static modifier to the property. Otherwise the property is initialized in the nested class structure
-            WriteLine($"public{(model.ParentModel == null ? " static" : "")} _{className} {className} => _{fieldName};");
+            WriteLine($"public{(model.IsRootModel(_config.UseNestedStructure) ? " static" : "")} _{className} {className} => _{fieldName};");
 
             // Write an empty line
             _builder.AppendLine();
@@ -246,9 +249,9 @@ namespace Umbraco.DictionaryBuilder.Building
         /// <param name="model"></param>
         private void WriteConstructor(DictionaryModel model)
         {
-            string itemKey = model.GenerateCodeItemKey(_config.UseParentItemKeyPrefix);
+            string itemKey = model.GenerateCodeItemKey(_config.UseNestedStructure);
             string className = itemKey.ToCodeString(true).ToPascalCase();
-            WriteLine($"public _{className}() : base(\"{model.ItemKey}\") {{}}");
+            WriteLine($"public _{className}() : base(\"{model.GetItemKey()}\") {{}}");
         }
 
         /// <summary>

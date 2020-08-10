@@ -94,7 +94,7 @@ namespace Umbraco.DictionaryBuilder.VueI18N
         private dynamic GetAllItems(out DateTime lastModified, params string[] prefixes)
         {
             DictionaryModelWrapper[] dictionaryModels = _localizationService.GetDictionaryModels(item => prefixes == null || !prefixes.Any() || prefixes.Any(prefix => item.ItemKey.Equals(prefix, StringComparison.InvariantCultureIgnoreCase) || item.ItemKey.StartsWith(prefix + ".", StringComparison.InvariantCultureIgnoreCase)))
-                .OrderBy(item => item.ItemKey)
+                .OrderBy(item => item.GetItemKey())
                 .Cast<DictionaryModelWrapper>()
                 .ToArray();
 
@@ -112,11 +112,11 @@ namespace Umbraco.DictionaryBuilder.VueI18N
         {
             var items = new Dictionary<dynamic,dynamic>();
 
-            DictionaryModelWrapper[] childDictionaryItems = allDictionaryItems.Where(x => x.ParentModel == parent).ToArray();
+            DictionaryModelWrapper[] childDictionaryItems = allDictionaryItems.Where(x => x.GetParentModel() == parent).ToArray();
             hasChildItems = childDictionaryItems.Any();
             foreach (DictionaryModelWrapper dictionaryItem in childDictionaryItems)
             {
-                string itemKey = dictionaryItem.GenerateCodeItemKey(_configuration.UseParentItemKeyPrefix);
+                string itemKey = dictionaryItem.GenerateCodeItemKey(_configuration.UseNestedStructure);
                 
                 itemKey = itemKey.ToCodeString(true).ToCamelCase();
                 items.Add($"${itemKey}", dictionaryItem.ToString());

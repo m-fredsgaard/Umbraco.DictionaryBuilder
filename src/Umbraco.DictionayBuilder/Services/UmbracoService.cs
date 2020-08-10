@@ -28,7 +28,7 @@ namespace Umbraco.DictionaryBuilder.Services
                 .OrderBy(x => x.ItemKey).ToArray();
             
             // Generate models
-            return GetDictionaryModels(dictionaryItems).OrderBy(x => x.ItemKey).ToArray();
+            return GetDictionaryModels(dictionaryItems).OrderBy(x => x.GetItemKey()).ToArray();
         }
 
         /// <summary>
