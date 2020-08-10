@@ -34,11 +34,25 @@ namespace Umbraco.DictionaryBuilder.Building
 
             // Generate the models code
             CodeBuilder builder = new CodeBuilder(_config);
-            builder.Generate(models);
+            if (_config.GenerateFilePerDictionaryItem)
+            {
+                foreach (DictionaryModel model in models)
+                {
+                    builder.Generate(model);
             
-            // Save the file
-            string filename = Path.Combine(_config.DictionaryDirectory, $"{_config.DictionaryItemsPartialClassName}.generated.cs");
-            File.WriteAllText(filename, builder.ToString());
+                    // Save the file
+                    string filename = Path.Combine(_config.DictionaryDirectory, $"{model.ItemKey}.generated.cs");
+                    File.WriteAllText(filename, builder.ToString());
+                }
+            }
+            else
+            {
+                builder.Generate(models);
+            
+                // Save the file
+                string filename = Path.Combine(_config.DictionaryDirectory, $"{_config.DictionaryItemsPartialClassName}.generated.cs");
+                File.WriteAllText(filename, builder.ToString());
+            }
         }
     }
 }

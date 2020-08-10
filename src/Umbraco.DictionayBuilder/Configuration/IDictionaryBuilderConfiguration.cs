@@ -9,7 +9,9 @@
         //string DictionaryHttpHandlerUrl { get; }
         //int DictionaryClientCache { get; }
         bool AcceptUnsafeModelsDirectory { get; }
+        // Todo: Rename to something like: ...Nested...
         bool UseParentItemKeyPrefix { get; }
+        bool GenerateFilePerDictionaryItem { get; }
         bool Enable { get; }
     }
 }

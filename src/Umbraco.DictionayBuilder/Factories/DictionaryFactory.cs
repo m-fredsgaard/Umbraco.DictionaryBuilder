@@ -6,8 +6,6 @@ using Serilog;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Models;
 using Umbraco.Core.Services;
-using Umbraco.DictionaryBuilder.Configuration;
-using Umbraco.DictionaryBuilder.Extensions;
 using Umbraco.DictionaryBuilder.Models;
 
 namespace Umbraco.DictionaryBuilder.Factories
@@ -15,17 +13,15 @@ namespace Umbraco.DictionaryBuilder.Factories
     public abstract class DictionaryFactory
     {
         private readonly ILocalizationService _localizationService;
-        private readonly IDictionaryBuilderConfiguration _configuration;
         private readonly IEnumerable<ILanguage> _languages;
 
         protected DictionaryFactory()
-            : this(Current.Services.LocalizationService, Current.Factory.GetInstance<IDictionaryBuilderConfiguration>())
+            : this(Current.Services.LocalizationService)
         { }
 
-        private DictionaryFactory(ILocalizationService localizationService, IDictionaryBuilderConfiguration configuration)
+        private DictionaryFactory(ILocalizationService localizationService)
         {
             _localizationService = localizationService;
-            _configuration = configuration;
             _languages = localizationService.GetAllLanguages();
         }
 
@@ -59,10 +55,6 @@ namespace Umbraco.DictionaryBuilder.Factories
         protected DictionaryModel Create(string itemKey, DictionaryModel parent, Func<CultureInfo, string> valueResolver)
         {
             DictionaryModelWrapper parentModel = parent as DictionaryModelWrapper;
-
-            // Add the parents item key as prefix if configuration says so, and if there is a parent model
-            if (_configuration.UseParentItemKeyPrefix && parentModel != null)
-                itemKey = $"{parentModel.ItemKey}.{itemKey}";
 
             // Get the dictionary item from Umbraco. Otherwise crete a new.
             IDictionaryItem dictionaryItem = _localizationService.GetDictionaryItemByKey(itemKey) ?? _localizationService.CreateDictionaryItemWithIdentity(itemKey, parentModel?.Key);
