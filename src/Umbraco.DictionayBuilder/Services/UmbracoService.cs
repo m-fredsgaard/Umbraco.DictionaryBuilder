@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Serilog;
 using Umbraco.Core.Models;
 using Umbraco.Core.Services;
 using Umbraco.DictionaryBuilder.Models;
@@ -22,13 +23,21 @@ namespace Umbraco.DictionaryBuilder.Services
         /// <returns>An array of models</returns>
         public DictionaryModel[] GetDictionaryModels(Func<IDictionaryItem, bool> predicate = null)
         {
-            // Get all dictionaries from Umbraco database
-            IDictionaryItem[] dictionaryItems = _localizationService.GetDictionaryItemDescendants(null)
-                .Where(predicate ?? (x => true))
-                .OrderBy(x => x.ItemKey).ToArray();
-            
-            // Generate models
-            return GetDictionaryModels(dictionaryItems).OrderBy(x => x.GetItemKey()).ToArray();
+            try
+            {
+                // Get all dictionaries from Umbraco database
+                IDictionaryItem[] dictionaryItems = _localizationService.GetDictionaryItemDescendants(null)
+                    .Where(predicate ?? (x => true))
+                    .OrderBy(x => x.ItemKey).ToArray();
+
+                // Generate models
+                return GetDictionaryModels(dictionaryItems).OrderBy(x => x.GetItemKey()).ToArray();
+            }
+            catch (Exception exception)
+            {
+                Log.Warning(exception, "Can't get dictionaries");
+                return null;
+            }
         }
 
         /// <summary>

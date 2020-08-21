@@ -93,7 +93,14 @@ namespace Umbraco.DictionaryBuilder.VueI18N
         /// <returns></returns>
         private dynamic GetAllItems(out DateTime lastModified, params string[] prefixes)
         {
-            DictionaryModelWrapper[] dictionaryModels = _localizationService.GetDictionaryModels(item => prefixes == null || !prefixes.Any() || prefixes.Any(prefix => item.ItemKey.Equals(prefix, StringComparison.InvariantCultureIgnoreCase) || item.ItemKey.StartsWith(prefix + ".", StringComparison.InvariantCultureIgnoreCase)))
+            DictionaryModelWrapper[] dictionaryModels =
+                (_localizationService.GetDictionaryModels(item =>
+                     prefixes == null || 
+                     !prefixes.Any() || 
+                     prefixes.Any(prefix => 
+                         item.ItemKey.Equals(prefix, StringComparison.InvariantCultureIgnoreCase) ||
+                         item.ItemKey.StartsWith(prefix + ".", StringComparison.InvariantCultureIgnoreCase)))
+                 ?? new DictionaryModel[0])
                 .OrderBy(item => item.GetItemKey())
                 .Cast<DictionaryModelWrapper>()
                 .ToArray();
@@ -110,7 +117,7 @@ namespace Umbraco.DictionaryBuilder.VueI18N
 
         private dynamic GenerateVueI18N(DictionaryModelWrapper[] allDictionaryItems, DictionaryModelWrapper parent, out bool hasChildItems)
         {
-            var items = new Dictionary<dynamic,dynamic>();
+            Dictionary<dynamic, dynamic> items = new Dictionary<dynamic,dynamic>();
 
             DictionaryModelWrapper[] childDictionaryItems = allDictionaryItems.Where(x => x.GetParentModel() == parent).ToArray();
             hasChildItems = childDictionaryItems.Any();

@@ -20,6 +20,12 @@ namespace Umbraco.DictionaryBuilder.Building
 
         internal void GenerateModels()
         {
+            // Get the models from Umbraco
+            DictionaryModel[] models = _umbracoService.GetDictionaryModels();
+            if(models == null)
+                // If no models, do nothing
+                return;
+
             // Create directory if it doesn't exist
             if (!Directory.Exists(_config.DictionaryDirectory))
                 Directory.CreateDirectory(_config.DictionaryDirectory);
@@ -29,8 +35,6 @@ namespace Umbraco.DictionaryBuilder.Building
             foreach (string file in generatedFiles)
                 File.Delete(file);
             
-            // Get the models from Umbraco
-            DictionaryModel[] models = _umbracoService.GetDictionaryModels();
             if (_config.GenerateFilePerDictionaryItem)
             {
                 // Generate a file per model

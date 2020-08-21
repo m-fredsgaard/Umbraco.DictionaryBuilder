@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
+using Serilog;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Dictionary;
 
@@ -20,7 +22,19 @@ namespace Umbraco.DictionaryBuilder.Models
         {
             _itemKey = itemKey;
             _parentModel = parentModel;
-            _resolver = culture => Current.CultureDictionaryFactory.CreateDictionary();
+            if(_resolver == null)
+                _resolver = culture =>
+                {
+                    try
+                    {
+                        return Current.CultureDictionaryFactory.CreateDictionary();
+                    }
+                    catch (Exception exception)
+                    {
+                        Log.Error(exception, "Error trying to create an ICultureDictionary");
+                        return null;
+                    }
+                };
         }
 
         public string GetItemKey()
@@ -40,7 +54,15 @@ namespace Umbraco.DictionaryBuilder.Models
 
         public string ToString(CultureInfo culture)
         {
-            return _resolver(culture)[_itemKey];
+            try
+            {
+                return _resolver?.Invoke(culture)?[_itemKey];
+            }
+            catch (Exception exception)
+            {
+                Log.Error(exception, "Can't get the dictionary value");
+                return null;
+            }
         }
 
         public static implicit operator string(DictionaryModel dictionaryModel)
