@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Serilog;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Events;
 using Umbraco.Core.Models;
@@ -126,22 +127,30 @@ namespace Umbraco.DictionaryBuilder.Compose
 
         private void EnsureDictionaries()
         {
-            Type[] dictionaryFactoryTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x =>
+            try
             {
-                try
+                Type[] dictionaryFactoryTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x =>
                 {
-                    return x.GetTypes();
-                }
-                catch (ReflectionTypeLoadException)
-                {
-                    return new Type[0];
-                }
-            }).Where(type => type.IsSubclassOf(typeof(DictionaryFactory))).Distinct().ToArray();
+                    try
+                    {
+                        return x.GetTypes();
+                    }
+                    catch (ReflectionTypeLoadException)
+                    {
+                        return new Type[0];
+                    }
+                }).Where(type => type.IsSubclassOf(typeof(DictionaryFactory))).Distinct().ToArray();
 
-            foreach (Type dictionaryFactoryType in dictionaryFactoryTypes)
+                foreach (Type dictionaryFactoryType in dictionaryFactoryTypes)
+                {
+                    DictionaryFactory dictionaryFactory =
+                        Activator.CreateInstance(dictionaryFactoryType) as DictionaryFactory;
+                    dictionaryFactory?.EnsureDictionaries();
+                }
+            }
+            catch(Exception exception)
             {
-                DictionaryFactory dictionaryFactory = Activator.CreateInstance(dictionaryFactoryType) as DictionaryFactory;
-                dictionaryFactory?.EnsureDictionaries();
+                Log.Error(exception, "Not able to ensure dictionaries");
             }
         }
 
