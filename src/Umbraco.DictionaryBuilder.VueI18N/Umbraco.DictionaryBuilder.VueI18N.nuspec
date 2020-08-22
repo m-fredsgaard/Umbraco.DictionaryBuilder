@@ -14,7 +14,7 @@
     <dependencies>
       <group targetFramework="net472">
         <dependency id="UmbracoCms.Core" version="[8.2.1, 9)" />
-        <dependency id="Our.Umbraco.DictionaryBuilder" version="1.0.10" />
+        <dependency id="Our.Umbraco.DictionaryBuilder" version="1.0.11" />
       </group>
     </dependencies>
     <references>

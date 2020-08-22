@@ -13,7 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{3CC1A0E4
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".solution files", ".solution files", "{7E3660F9-8E26-466D-B0BF-45FFDAC4CD65}"
 	ProjectSection(SolutionItems) = preProject
-		..\build\GenereateDevelopNuGetPackage.cmd = ..\build\GenereateDevelopNuGetPackage.cmd
+		..\build\GenereateNuGetPackage.cmd = ..\build\GenereateNuGetPackage.cmd
+		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Umbraco", "Demo.Umbraco\Demo.Umbraco.csproj", "{F8C74500-B953-410D-BCB7-DB5F454EB4CF}"

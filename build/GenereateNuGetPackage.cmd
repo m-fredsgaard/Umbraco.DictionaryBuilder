@@ -5,9 +5,9 @@ set ProjectPath=%~2
 set TargetDir=%~3
 set ConfigurationName=%~4
 
-set Suffix="dev"
-if "%ConfigurationName%" NEQ "Debug" (
-	set Suffix=""
+set Suffix=""
+if "%ConfigurationName%" NEQ "Release" (
+	set Suffix="%ConfigurationName%"
 )
 
 set NuGetPath=%NUGET_PATH%

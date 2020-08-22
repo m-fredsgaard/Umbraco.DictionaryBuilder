@@ -227,7 +227,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\ModelsMode.cs" />
-    <Compile Include="Extensions\FactoryExtensions.cs" />
     <Compile Include="Factories\DictionaryFactory.cs" />
     <Compile Include="Extensions\DictionaryModelExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
@@ -268,7 +267,7 @@
     <Error Condition="!Exists('..\packages\Microsoft.SourceLink.GitHub.1.0.0\build\Microsoft.SourceLink.GitHub.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.SourceLink.GitHub.1.0.0\build\Microsoft.SourceLink.GitHub.targets'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>$(SolutionDir)..\build\GenereateDevelopNuGetPackage.cmd "$(SolutionDir)" "$(ProjectPath)" "$(TargetDir)" "$(ConfigurationName)"</PostBuildEvent>
+    <PostBuildEvent>$(SolutionDir)..\build\GenereateNuGetPackage.cmd "$(SolutionDir)" "$(ProjectPath)" "$(TargetDir)" "$(ConfigurationName)"</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Microsoft.Build.Tasks.Git.1.0.0\build\Microsoft.Build.Tasks.Git.targets" Condition="Exists('..\packages\Microsoft.Build.Tasks.Git.1.0.0\build\Microsoft.Build.Tasks.Git.targets')" />
   <Import Project="..\packages\Microsoft.SourceLink.Common.1.0.0\build\Microsoft.SourceLink.Common.targets" Condition="Exists('..\packages\Microsoft.SourceLink.Common.1.0.0\build\Microsoft.SourceLink.Common.targets')" />

@@ -12,6 +12,7 @@ namespace Umbraco.DictionaryBuilder.Extensions
         {
             return Format(model, CultureInfo.CurrentUICulture, args);
         }
+
         public static string Format(this DictionaryModel model, CultureInfo culture, params object[] args)
         {
             string dictionaryValue = model.ToString(culture);
@@ -54,13 +55,13 @@ namespace Umbraco.DictionaryBuilder.Extensions
                 return true;
 
             string[] itemKeyParts = model.GetItemKey().Split('.');
-            string[] parentItemKeyParts = parentModel?.GetItemKey().Split('.') ?? new string[0];
+            string[] parentItemKeyParts = parentModel.GetItemKey().Split('.') ?? new string[0];
 
             bool equal = itemKeyParts.Length - parentItemKeyParts.Length == 1 && !string.IsNullOrWhiteSpace(itemKeyParts.Last());
             if (!equal)
                 return false;
 
-            if (parentModel != null && !parentModel.IsValidForNestedStructure())
+            if (!parentModel.IsValidForNestedStructure())
                 return false;
             
             for (int i = 0; i < parentItemKeyParts.Length; i++)

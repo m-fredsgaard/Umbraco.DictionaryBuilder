@@ -172,6 +172,6 @@
     <Error Condition="!Exists('..\packages\Umbraco.SqlServerCE.4.0.0.1\build\Umbraco.SqlServerCE.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Umbraco.SqlServerCE.4.0.0.1\build\Umbraco.SqlServerCE.targets'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>$(SolutionDir)..\build\GenereateDevelopNuGetPackage.cmd "$(SolutionDir)" "$(ProjectPath)" "$(TargetDir)" "$(ConfigurationName)"</PostBuildEvent>
+    <PostBuildEvent>$(SolutionDir)..\build\GenereateNuGetPackage.cmd "$(SolutionDir)" "$(ProjectPath)" "$(TargetDir)" "$(ConfigurationName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
