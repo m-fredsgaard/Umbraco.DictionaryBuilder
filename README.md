@@ -3,7 +3,7 @@ An Umbraco-CMS strongly typed dictionary item builder
 
 ## Usage
 
-To write a dictionary in a Razor file, just write
+To write a dictionary item value in a Razor file, just write
 
 > Dictionary value "Apple"
 ```
@@ -66,10 +66,10 @@ ___
 ```
 
 #### string Format(CultureInfo culture, params object[] args)
-Like [string Format(params object[] args)](#string%20Format(params%20object%5B%5D%20args)), but in the requested culture.
+Like [string Format(params object[] args)](#string-formatparams-object-args), but in the requested culture.
 
 #### string Format(CultureInfo culture, int count, params object[] args)
-Like [string Format(int count, params object[] args)](#string%20Format(int%20count%2C%20params%20object%5B%5D%20args)), but in the requested culture.
+Like [string Format(int count, params object[] args)](#string-formatint-count-params-object-args), but in the requested culture.
 
 ## Configuration
 
