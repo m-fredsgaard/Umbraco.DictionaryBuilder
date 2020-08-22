@@ -11,7 +11,7 @@ To write a dictionary item value in a Razor file, just write
 // Returns: "Apple"
 ```
 
-To write the dictionary item with the `Test` item key in the CurrentUICulture
+Dictionary values are return in CurrentUICulture, unless another culture is specified in the [Format extension method](#format-extensions). 
 
 ### Format extensions
 
