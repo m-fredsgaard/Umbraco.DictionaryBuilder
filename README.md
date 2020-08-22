@@ -24,8 +24,11 @@ In namespace `Umbraco.DictionaryBuilder.Extensions`
 @Dictionaries.Apple.Format("green")
 // Returns: "green apple"
 ```
+Equivalent to `@string.Format(Dictionaries.Apple)`
+
 
 #### string Format(int count, params object[] args)
+A pluralization method
 
 > Dictionary value "no apples|one apple|\{count\} apples"
 
