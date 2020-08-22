@@ -5,7 +5,6 @@ using Serilog;
 using Serilog.Events;
 using Umbraco.Core.Models;
 using Umbraco.DictionaryBuilder.Factories;
-using Umbraco.DictionaryBuilder.Models;
 
 namespace Umbraco.DictionaryBuilder.Tests.Factories
 {
@@ -40,7 +39,7 @@ namespace Umbraco.DictionaryBuilder.Tests.Factories
         }
 
         [Test]
-        public void Create_LocalizationServiceThrowsException_ErrorLoggedReturnNull()
+        public void Create_LocalizationServiceThrowsException_ThrowException()
         {
             // Arrange
             Mock<ILogger> logger = new Mock<ILogger>();
@@ -62,16 +61,12 @@ namespace Umbraco.DictionaryBuilder.Tests.Factories
 
             DictionaryFactoryImpl subject = new DictionaryFactoryImpl();
 
-            // Act
-            DictionaryModel result = subject.Create(It.IsAny<string>());
-
             // Assert
-            Assert.That(result, Is.Null);
-            logger.Verify(x => x.Write(
-                It.Is<LogEventLevel>(level => level == LogEventLevel.Error),
-                It.IsAny<Exception>(), 
-                It.IsAny<string>()
-            ));
+            Assert.Throws<Exception>(() =>
+            {
+                // Act
+                subject.Create(It.IsAny<string>());
+            });
         }
 
         private class DictionaryFactoryImpl : DictionaryFactory
@@ -81,9 +76,9 @@ namespace Umbraco.DictionaryBuilder.Tests.Factories
                 throw new NotImplementedException();
             }
 
-            public new DictionaryModel Create(string itemKey)
+            public new void Create(string itemKey)
             {
-                return base.Create(itemKey);
+                base.Create(itemKey);
             }
         }
     }

@@ -156,10 +156,17 @@ namespace Umbraco.DictionaryBuilder.Compose
 
         private void GenerateModels()
         {
-            if (!_configuration.Enable)
-                return;
+            try
+            {
+                if (!_configuration.Enable)
+                    return;
 
-            _modelsGenerator.GenerateModels();
+                _modelsGenerator.GenerateModels();
+            }
+            catch(Exception exception)
+            {
+                Log.Error(exception, "Not able to generate models");
+            }
         }
 
         public void Terminate()

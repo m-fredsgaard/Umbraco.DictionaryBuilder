@@ -4,7 +4,6 @@ using NUnit.Framework;
 using Serilog;
 using Serilog.Events;
 using Umbraco.Core.Services;
-using Umbraco.DictionaryBuilder.Models;
 using Umbraco.DictionaryBuilder.Services;
 
 namespace Umbraco.DictionaryBuilder.Tests.Services
@@ -13,7 +12,7 @@ namespace Umbraco.DictionaryBuilder.Tests.Services
     public class UmbracoServiceTests
     {
         [Test]
-        public void GetDictionaryModels_LocalizationServiceThrowsException_ErrorLoggedReturnNull()
+        public void GetDictionaryModels_LocalizationServiceThrowsException_ErrorLoggedThrowException()
         {
             // Arrange
             Mock<ILogger> logger = new Mock<ILogger>();
@@ -27,13 +26,15 @@ namespace Umbraco.DictionaryBuilder.Tests.Services
 
             UmbracoService subject = new UmbracoService(localizationService.Object);
 
-            // Act
-            DictionaryModel[] result = subject.GetDictionaryModels();
-
             // Assert
-            Assert.That(result, Is.Null);
+            Assert.Throws<Exception>(() =>
+            {
+                // Act
+                subject.GetDictionaryModels();
+            });
+            
             logger.Verify(x => x.Write(
-                It.Is<LogEventLevel>(level => level == LogEventLevel.Warning),
+                It.Is<LogEventLevel>(level => level == LogEventLevel.Error),
                 It.IsAny<Exception>(), 
                 It.IsAny<string>()
             ));

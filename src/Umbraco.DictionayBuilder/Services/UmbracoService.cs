@@ -35,8 +35,8 @@ namespace Umbraco.DictionaryBuilder.Services
             }
             catch (Exception exception)
             {
-                Log.Warning(exception, "Can't get dictionaries");
-                return null;
+                Log.Error(exception, "Can't get dictionaries");
+                throw;
             }
         }
 
@@ -45,7 +45,7 @@ namespace Umbraco.DictionaryBuilder.Services
         /// </summary>
         /// <param name="dictionaryItems">The collection of all dictionary items</param>
         /// <param name="parentModel">The parent model</param>
-        /// <returns></returns>
+        /// <returns>A collection of dictionary models</returns>
         private static IEnumerable<DictionaryModel> GetDictionaryModels(IDictionaryItem[] dictionaryItems, DictionaryModelWrapper parentModel = null)
         {
             if (dictionaryItems == null)

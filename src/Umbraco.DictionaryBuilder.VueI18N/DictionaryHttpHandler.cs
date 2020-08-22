@@ -18,12 +18,12 @@ namespace Umbraco.DictionaryBuilder.VueI18N
 {
     public class DictionaryHttpHandler : IDictionaryHttpHandler
     {
-        private readonly IUmbracoService _localizationService;
+        private readonly IUmbracoService _umbracoService;
         private readonly IVueI18NConfiguration _configuration;
 
-        public DictionaryHttpHandler(IUmbracoService localizationService, IVueI18NConfiguration configuration)
+        public DictionaryHttpHandler(IUmbracoService umbracoService, IVueI18NConfiguration configuration)
         {
-            _localizationService = localizationService;
+            _umbracoService = umbracoService;
             _configuration = configuration;
         }
 
@@ -94,13 +94,12 @@ namespace Umbraco.DictionaryBuilder.VueI18N
         private dynamic GetAllItems(out DateTime lastModified, params string[] prefixes)
         {
             DictionaryModelWrapper[] dictionaryModels =
-                (_localizationService.GetDictionaryModels(item =>
-                     prefixes == null || 
-                     !prefixes.Any() || 
-                     prefixes.Any(prefix => 
-                         item.ItemKey.Equals(prefix, StringComparison.InvariantCultureIgnoreCase) ||
-                         item.ItemKey.StartsWith(prefix + ".", StringComparison.InvariantCultureIgnoreCase)))
-                 ?? new DictionaryModel[0])
+                _umbracoService.GetDictionaryModels(item =>
+                    prefixes == null ||
+                    !prefixes.Any() ||
+                    prefixes.Any(prefix =>
+                        item.ItemKey.Equals(prefix, StringComparison.InvariantCultureIgnoreCase) ||
+                        item.ItemKey.StartsWith(prefix + ".", StringComparison.InvariantCultureIgnoreCase)))
                 .OrderBy(item => item.GetItemKey())
                 .Cast<DictionaryModelWrapper>()
                 .ToArray();
