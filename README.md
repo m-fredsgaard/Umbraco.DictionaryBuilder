@@ -1,6 +1,8 @@
 # Umbraco.DictionaryBuilder
 An Umbraco-CMS strongly typed dictionary item builder
 
+[![Nuget](https://img.shields.io/nuget/v/Our.Umbraco.DictionaryBuilder)](https://www.nuget.org/packages/Our.Umbraco.DictionaryBuilder/)
+
 ## Usage
 
 To write a dictionary item value in a Razor file, just write
@@ -125,4 +127,7 @@ An indicator of whether the DictionaryBuilder is enabled.
 > Default value: `False`
 
 # Umbraco.DictionaryBuilder.VueI18N
+
+[![Nuget](https://img.shields.io/nuget/v/Our.Umbraco.DictionaryBuilder.VueI18N)](https://www.nuget.org/packages/Our.Umbraco.DictionaryBuilder.VueI18N/)
+
 Todo: Explain this
