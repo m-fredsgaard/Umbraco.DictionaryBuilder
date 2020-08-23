@@ -7,21 +7,21 @@ An Umbraco-CMS strongly typed dictionary item builder
 
 To write a dictionary item value in a Razor file, just write
 
-> Dictionary value "Apple"
+> Example dictionary value "Apple"
 ```
 @Dictionaries.Apple
 // Returns: "Apple"
 ```
 
-Dictionary values are return in CurrentUICulture, unless another culture is specified in the [Format extension method](#format-extensions). 
+Dictionary values are return in [Thread.CurrentUICulture](https://docs.microsoft.com/en-us/dotnet/api/system.threading.thread.currentuiculture?view=netframework-4.7.2), unless another culture is specified in the [Format extension methods](#format-extension-methods). 
 
-### Format extensions
+### Format extension methods
 
 In namespace `Umbraco.DictionaryBuilder.Extensions`
 
 #### string Format(params object[] args)
 
-> Dictionary value "{0} apple"
+> Example dictionary value "{0} apple"
 ```
 @Dictionaries.Apple.Format("green")
 // Returns: "green apple"
@@ -32,7 +32,7 @@ Equivalent to `@string.Format(Dictionaries.Apple)`
 #### string Format(int count, params object[] args)
 A pluralization method
 
-> Dictionary value "no apples|one apple|\{count\} apples"
+> Example dictionary value "no apples|one apple|\{count\} apples"
 
 ```
 @Dictionaries.Apple.Format(0)
@@ -51,7 +51,7 @@ A pluralization method
 // Returns: "33 apples"
 ```
 ___
-> Dictionary value "no {0} apples|one {0} apple|\{count\} {0} apples"
+> Example dictionary value "no {0} apples|one {0} apple|\{count\} {0} apples"
 
 ```
 @Dictionaries.Apple.Format(0, "red")
@@ -71,17 +71,21 @@ ___
 ```
 
 #### string Format(CultureInfo culture, params object[] args)
-Like [string Format(params object[] args)](#string-formatparams-object-args), but in the requested culture.
+Like [string Format(params object[] args)](#string-formatparams-object-args), but returns the tranlated value of the requested culture.
 
 #### string Format(CultureInfo culture, int count, params object[] args)
-Like [string Format(int count, params object[] args)](#string-formatint-count-params-object-args), but in the requested culture.
+Like [string Format(int count, params object[] args)](#string-formatint-count-params-object-args), but returns the tranlated value of the requested culture.
 
 ## Configuration
 
 ### AppSettings
 
 #### Umbraco.DictionaryBuilder.ModelsMode
-Default value: `LiveAppData`
+> Valid values: `LiveAppData`
+>
+> Default value: `LiveAppData`
+
+Note: More modes are in the pipeline.
 
 #### Umbraco.DictionaryBuilder.DictionaryNamespace
 The namespace in witch the dictionary models will be generated.
