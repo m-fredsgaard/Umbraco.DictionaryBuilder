@@ -178,7 +178,7 @@ To use dictionaries in Vue, just use the `$t`/`$tc` syntax in Vue I18n.
 
 #### Naming convensions
 
-The get a dictionary with a specifc key, prefix the key with `$`. 
+To get a dictionary with a specifc key, prefix the key with `$`. 
 So lets say, that we need the value of a dictionary item with the key `ItemKey`, use `$itemKey`
 
 *Note: Remember to use Camel Casing, when specifing a key*
