@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".solution files", ".solutio
 	ProjectSection(SolutionItems) = preProject
 		..\build\GenereateNuGetPackage.cmd = ..\build\GenereateNuGetPackage.cmd
 		..\README.md = ..\README.md
+		..\Umbraco.DictionaryBuilder.md = ..\Umbraco.DictionaryBuilder.md
+		..\Umbraco.DictionaryBuilder.VueI18N.md = ..\Umbraco.DictionaryBuilder.VueI18N.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Umbraco", "Demo.Umbraco\Demo.Umbraco.csproj", "{F8C74500-B953-410D-BCB7-DB5F454EB4CF}"
