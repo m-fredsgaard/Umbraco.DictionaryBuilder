@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Web;
+using System.Web.Caching;
 using System.Web.Routing;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -18,6 +20,7 @@ namespace Umbraco.DictionaryBuilder.VueI18N
 {
     public class DictionaryHttpHandler : IDictionaryHttpHandler
     {
+        private readonly object _lockObject = new object();
         private readonly IUmbracoService _umbracoService;
         private readonly IVueI18NConfiguration _configuration;
 
@@ -32,43 +35,86 @@ namespace Umbraco.DictionaryBuilder.VueI18N
         public void ProcessRequest(HttpContext context)
         {
             string locale = context.Request.QueryString["l"] ?? context.Request.QueryString["locale"];
-            SetCurrentCulture(locale);
+            string prefix = (context.Request.QueryString["p"] ?? context.Request.QueryString["prefix"]);
 
-            string[] prefixes = (context.Request.QueryString["p"] ?? context.Request.QueryString["prefix"])?.Split(',');
-            dynamic dictionaryItems = GetAllItems(out DateTime lastModified, prefixes);
-            if (dictionaryItems == null)
+            CultureInfo culture = SetCurrentCulture(locale);
+
+            string cacheKey = $"DictionaryItems_{culture.Name}_{prefix}";
+            if (!(context.Cache[cacheKey] is string json))
             {
-                context.Response.StatusCode = (int) HttpStatusCode.NotFound;
-                return;
+                try
+                {
+                    Monitor.Enter(_lockObject);
+                    json = context.Cache[cacheKey] as string;
+                    if (json == null)
+                    {
+                        string[] prefixes = prefix?.Split(',');
+                        dynamic dictionaryItems = GetAllItems(prefixes);
+                        if (dictionaryItems == null)
+                        {
+                            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                            return;
+                        }
+
+                        JsonSerializerSettings jsonFormat = new JsonSerializerSettings
+                        {
+                            ContractResolver = new CamelCasePropertyNamesContractResolver()
+                        };
+                        json = JsonConvert.SerializeObject(dictionaryItems, jsonFormat);
+                        int serverCache = _configuration.DictionaryServerCache;
+                        if (serverCache > 0)
+                        {
+                            context.Cache.Add(cacheKey, json, null, DateTime.Now.AddMinutes(serverCache),
+                                System.Web.Caching.Cache.NoSlidingExpiration,
+                                CacheItemPriority.Default,
+                                (key, value, reason) =>
+                                    Log.Debug($"Cache key {key} is removed from cache with this reason: {reason}"));
+                        }
+                    }
+                }
+                finally
+                {
+                    Monitor.Exit(_lockObject);
+                }
             }
 
-            if(lastModified == default)
-                lastModified = DateTime.UtcNow;
-            
-            JsonSerializerSettings jsonFormat = new JsonSerializerSettings 
-            { 
-                ContractResolver = new CamelCasePropertyNamesContractResolver() 
-            };
-            string json = JsonConvert.SerializeObject(dictionaryItems, jsonFormat);
-            
             // Set client cache
             int clientCache = _configuration.DictionaryClientCache;
             if (clientCache > 0)
             {
-                context.Response.Cache.SetCacheability(HttpCacheability.Public);
-                context.Response.Cache.SetExpires(DateTime.UtcNow.AddMinutes(clientCache));
-                context.Response.Cache.SetMaxAge(TimeSpan.FromMinutes(clientCache));
-                context.Response.AddHeader("Last-Modified", lastModified.ToLongDateString());
+                context.Response.AddHeader("cache-control", "public");
+                context.Response.AddHeader("cache-control", $"max-age={clientCache*60}");
             }
 
-            context.Response.ContentType = "application/json";
-            context.Response.Write(json); 
+            string etag = $"{json.GetHashCode()}";
+            if (context.Request.Headers["If-None-Match"] != null && context.Request.Headers["If-None-Match"].Equals(etag))
+                context.Response.StatusCode = (int)HttpStatusCode.NotModified;
+            else
+            {
+                context.Response.AddHeader("etag", etag);
+                
+                context.Response.ContentType = "application/json";
+                context.Response.Write(json); 
+
+                if (context.Request.Headers["Accept-Encoding"].Contains("gzip"))
+                {
+                    // gzip
+                    context.Response.Filter = new GZipStream(context.Response.Filter, CompressionMode.Compress);
+                    context.Response.AppendHeader("Content-Encoding", "gzip");
+                }
+                else if (context.Request.Headers["Accept-Encoding"].Contains("deflate") || context.Request.Headers["Accept-Encoding"] == "*")
+                {
+                    // deflate
+                    context.Response.Filter = new DeflateStream(context.Response.Filter, CompressionMode.Compress);
+                    context.Response.AppendHeader("Content-Encoding", "gzip");
+                }
+            }
         }
 
-        private static void SetCurrentCulture(string locale)
+        private static CultureInfo SetCurrentCulture(string locale)
         {
             if(locale == null)
-                return;
+                return Thread.CurrentThread.CurrentCulture;
 
             try
             {
@@ -80,6 +126,7 @@ namespace Umbraco.DictionaryBuilder.VueI18N
             {
                 Log.Warning(e, $"Culture {locale} not found. Using current culture: {CultureInfo.CurrentUICulture.Name}");
             }
+            return Thread.CurrentThread.CurrentCulture;
         }
 
         public IHttpHandler GetHttpHandler(RequestContext requestContext)
@@ -91,7 +138,7 @@ namespace Umbraco.DictionaryBuilder.VueI18N
         /// Get all dictionary items for Vue app formatted as a tree in the shape that vue-I18n likes.
         /// </summary>
         /// <returns></returns>
-        private dynamic GetAllItems(out DateTime lastModified, params string[] prefixes)
+        private dynamic GetAllItems(params string[] prefixes)
         {
             DictionaryModelWrapper[] dictionaryModels =
                 _umbracoService.GetDictionaryModels(item =>
@@ -103,8 +150,6 @@ namespace Umbraco.DictionaryBuilder.VueI18N
                 .OrderBy(item => item.GetItemKey())
                 .Cast<DictionaryModelWrapper>()
                 .ToArray();
-
-            lastModified = dictionaryModels.Select(x => x.LastModified).Max();
 
             return GenerateVueI18N(dictionaryModels, null);
         }

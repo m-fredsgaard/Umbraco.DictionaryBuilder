@@ -7,9 +7,11 @@ namespace Umbraco.DictionaryBuilder.VueI18N.Configuration
     {
         private const string Prefix = "Umbraco.DictionaryBuilder.";
         private const string DefaultDictionaryHttpHandlerUrl = "umbraco/dictionaries.json";
+        private const int DefaultDictionaryServerCache = 60;
         private const int DefaultDictionaryClientCache = 60;
         
         public string DictionaryHttpHandlerUrl { get; }
+        public int DictionaryServerCache { get; }
 
         public int DictionaryClientCache { get; }
 
@@ -17,14 +19,19 @@ namespace Umbraco.DictionaryBuilder.VueI18N.Configuration
         {
             // ensure defaults are initialized for tests
             DictionaryHttpHandlerUrl = DefaultDictionaryHttpHandlerUrl;
+            DictionaryServerCache = DefaultDictionaryServerCache;
             DictionaryClientCache = DefaultDictionaryClientCache;
 
             string value = ConfigurationManager.AppSettings[Prefix + "HttpHandlerUrl"];
             if (!string.IsNullOrWhiteSpace(value))
                 DictionaryHttpHandlerUrl = value;
 
+            value = ConfigurationManager.AppSettings[Prefix + "DictionaryServerCache"];
+            if (int.TryParse(value, out int serverCache))
+                DictionaryServerCache = serverCache;
+
             value = ConfigurationManager.AppSettings[Prefix + "DictionaryClientCache"];
-            if (!int.TryParse(value, out int clientCache))
+            if (int.TryParse(value, out int clientCache))
                 DictionaryClientCache = clientCache;
         }
     }
