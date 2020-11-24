@@ -45,7 +45,7 @@ namespace Umbraco.DictionaryBuilder.Extensions
             return camelCase;
         }
 
-        internal static string ToCodeString(this string value, bool isTypeName)
+        public static string ToCodeString(this string value, bool isTypeName)
         {
             bool nextMustBeStartChar = true;
             if (value.Length == 0)

@@ -170,14 +170,35 @@ namespace Umbraco.DictionaryBuilder.VueI18N
                 string itemKey = dictionaryItem.GenerateCodeItemKey(_configuration.UseNestedStructure);
                 
                 itemKey = itemKey.ToCodeString(true).ToCamelCase();
-                items.Add($"${itemKey}", dictionaryItem.ToString());
+                try
+                {
+                    items.Add($"${itemKey}", dictionaryItem.ToString());
+                }
+                catch(Exception e)
+                {
+                    throw new Exception($"Unable to add '${itemKey}' dictionaryItem", e);
+                }
 
                 dynamic childItems = GenerateVueI18N(allDictionaryItems, dictionaryItem, out bool addChildItems);
-                if (addChildItems)
+                if (!addChildItems) 
+                    continue;
+
+                try
+                {
                     items.Add($"{itemKey}", childItems);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception($"Unable to add '{itemKey}' dictionaryItem", e);
+                }
             }
 
             return items;
+        }
+
+        private void AddDictionaryItem(string key, dynamic value)
+        {
+            items.Add($"{itemKey}", childItems);
         }
     }
 }
