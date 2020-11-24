@@ -23,7 +23,7 @@ namespace Umbraco.DictionaryBuilder.VueI18N
         private readonly object _lockObject = new object();
         private readonly IUmbracoService _umbracoService;
         private readonly IVueI18NConfiguration _configuration;
-
+        
         public DictionaryHttpHandler(IUmbracoService umbracoService, IVueI18NConfiguration configuration)
         {
             _umbracoService = umbracoService;
@@ -176,7 +176,7 @@ namespace Umbraco.DictionaryBuilder.VueI18N
                 }
                 catch(Exception e)
                 {
-                    throw new Exception($"Unable to add '${itemKey}' dictionaryItem", e);
+                    Log.Error(e, $"Unable to add '${itemKey}' dictionaryItem");
                 }
 
                 dynamic childItems = GenerateVueI18N(allDictionaryItems, dictionaryItem, out bool addChildItems);
@@ -189,7 +189,7 @@ namespace Umbraco.DictionaryBuilder.VueI18N
                 }
                 catch (Exception e)
                 {
-                    throw new Exception($"Unable to add '{itemKey}' dictionaryItem", e);
+                    Log.Error(e, $"Unable to add '${itemKey}' dictionaryItem");
                 }
             }
 
