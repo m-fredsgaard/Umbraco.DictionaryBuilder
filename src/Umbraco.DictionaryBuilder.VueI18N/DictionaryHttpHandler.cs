@@ -195,10 +195,5 @@ namespace Umbraco.DictionaryBuilder.VueI18N
 
             return items;
         }
-
-        private void AddDictionaryItem(string key, dynamic value)
-        {
-            items.Add($"{itemKey}", childItems);
-        }
     }
 }
