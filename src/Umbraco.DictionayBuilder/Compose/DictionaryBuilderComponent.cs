@@ -170,8 +170,6 @@ namespace Umbraco.DictionaryBuilder.Compose
         }
 
         public void Terminate()
-        {
-            throw new NotImplementedException();
-        }
+        { }
     }
 }

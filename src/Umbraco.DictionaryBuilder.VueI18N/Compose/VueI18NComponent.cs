@@ -31,8 +31,6 @@ namespace Umbraco.DictionaryBuilder.VueI18N.Compose
         }
 
         public void Terminate()
-        {
-            throw new NotImplementedException();
-        }
+        { }
     }
 }

@@ -39,6 +39,6 @@ namespace Umbraco.DictionaryBuilder.VueI18N.Properties
 {
     internal static class AssemblyInfo
     {
-        public const string Version = "1.0.8";
+        public const string Version = "1.0.9";
     }
 }
