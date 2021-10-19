@@ -8,6 +8,7 @@ using Umbraco.DictionaryBuilder.Services;
 
 namespace Umbraco.DictionaryBuilder.Compose
 {
+    [RuntimeLevel(MinLevel = RuntimeLevel.Run)]
     public class DictionaryBuilderComposer : ICoreComposer
     {
         public void Compose(Composition composition)
