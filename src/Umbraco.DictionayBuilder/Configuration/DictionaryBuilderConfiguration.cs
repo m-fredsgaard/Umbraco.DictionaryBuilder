@@ -34,9 +34,6 @@ namespace Umbraco.DictionaryBuilder.Configuration
             DictionaryItemsPartialClassName = DefaultDictionaryItemsPartialClassName;
             DictionaryDirectory = IOHelper.MapPath(DefaultDictionaryDirectory);
 
-            // stop here, everything is false
-            if (!Enable) return;
-
             // default: false
             AcceptUnsafeModelsDirectory = ConfigurationManager.AppSettings[Prefix + "AcceptUnsafeModelsDirectory"].InvariantEquals("true");
             UseNestedStructure = ConfigurationManager.AppSettings[Prefix + "UseNestedStructure"].InvariantEquals("true");
